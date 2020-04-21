@@ -32,8 +32,7 @@ class App {
     );
 
     shouldPlayInLoopCheckbox.onChange.listen((Event e) {
-      canvasPlayer
-          .setShouldPlayInLoop((e.currentTarget as InputElement).checked);
+      canvasPlayer.shouldPlayInLoop = (e.currentTarget as InputElement).checked;
     });
 
     circles.add(Circle(
@@ -73,7 +72,7 @@ class App {
   }
 
   void _handlerFormatRadio(Event e) {
-    canvasPlayer.setFormat((e.currentTarget as InputElement).value);
+    canvasPlayer.format = (e.currentTarget as InputElement).value;
   }
 
   void attachListeners() {
@@ -81,12 +80,13 @@ class App {
         (InputElement radio) => radio.onClick.listen(_handlerFormatRadio));
 
     qualityRange.onChange.listen((Event e) {
-      double quality = (e.currentTarget as InputElement).valueAsNumber;
-      canvasPlayer.setQuality(quality);
+      double _quality = (e.currentTarget as InputElement).valueAsNumber;
+      print(_quality);
+      canvasPlayer.quality = _quality;
     });
 
     fpsInputElement.onChange.listen((Event e) {
-      canvasPlayer.setFps((e.currentTarget as InputElement).valueAsNumber);
+      canvasPlayer.fps = (e.currentTarget as InputElement).valueAsNumber;
     });
 
     recordCanvasElement.onMouseDown.listen((e) {

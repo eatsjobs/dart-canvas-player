@@ -14,10 +14,9 @@ class CanvasPlayer {
   ImageElement image;
   bool isRecording;
   bool isPlaying;
-  bool _shouldPlayInLoop;
-  int fps;
+  bool shouldPlayInLoop;
+  int _fps;
   double quality;
-  String format;
   int _recordIntervalID;
   int _playRequestAnimationID;
   double _now;
@@ -25,27 +24,44 @@ class CanvasPlayer {
   double _delta;
   double _interval;
   Iterator imagesIterator;
+  String _format;
 
-  CanvasPlayer(
-      {CanvasElement canvasElement,
-      CanvasElement targetCanvasElement,
-      int fps = 24,
-      double quality = 0.5,
-      String format = 'jpeg'}) {
+  // jpg or png
+  set format(String format) {
+    _format = FORMAT[format.toLowerCase()];
+  }
+
+  String get format {
+    return _format;
+  }
+
+  set fps(int fps) {
+    _fps = fps;
+    _interval = (1000 / _fps).toDouble();
+  }
+
+  int get fps {
+    return _fps;
+  }
+
+  CanvasPlayer({
+    this.canvasElement,
+    this.targetCanvasElement,
+    quality,
+    String format,
+    fps = 30,
+  }) {
     this.format = format;
-    this.canvasElement = canvasElement;
-    this.targetCanvasElement = targetCanvasElement;
-    this.quality = quality;
-
+    this.fps = fps;
+    this.quality = 0.5;
     image = ImageElement(src: '');
     image.onLoad.listen(_render);
 
-    _shouldPlayInLoop = false;
+    shouldPlayInLoop = false;
     isRecording = false;
     isPlaying = false;
     _now = _then = DateTime.now().millisecondsSinceEpoch.toDouble();
     _frames = [];
-    setFps(fps);
   }
 
   void record() {
@@ -54,21 +70,22 @@ class CanvasPlayer {
   }
 
   void _recordLoop(num id) {
-    _recordIntervalID = window.requestAnimationFrame(_recordLoop);
+    _recordIntervalID = window.requestAnimationFrame((id) => _recordLoop(id));
 
-    _now = new DateTime.now().millisecondsSinceEpoch.toDouble();
+    _now = DateTime.now().millisecondsSinceEpoch.toDouble();
     _delta = _now - _then;
 
     if (_delta > _interval) {
       print(canvasElement);
-      _frames.add(canvasElement.toDataUrl(FORMAT[format], quality));
+      _frames.add(canvasElement.toDataUrl(format, quality));
       _then = _now - (_delta % _interval);
     }
   }
 
   void _playLoop(num id) {
     if (!isRecording && _frames.isNotEmpty) {
-      _playRequestAnimationID = window.requestAnimationFrame(_playLoop);
+      _playRequestAnimationID =
+          window.requestAnimationFrame((id) => _playLoop(id));
 
       _now = new DateTime.now().millisecondsSinceEpoch.toDouble();
       _delta = _now - _then;
@@ -78,7 +95,7 @@ class CanvasPlayer {
         bool hasNext = imagesIterator.moveNext();
         if (hasNext) {
           image.src = imagesIterator.current;
-        } else if (_shouldPlayInLoop && !hasNext) {
+        } else if (shouldPlayInLoop && !hasNext) {
           imagesIterator = _frames.iterator;
         }
         // Just `then = now` is not enough.
@@ -139,28 +156,8 @@ class CanvasPlayer {
 
   // play in the target canvas
   void play({bool shouldPlayInLoop}) {
-    _shouldPlayInLoop = shouldPlayInLoop;
+    shouldPlayInLoop = shouldPlayInLoop;
     isPlaying = true;
     _playLoop(window.performance.now());
-  }
-
-  // set the fps
-  void setFps(int fps) {
-    fps = fps;
-    _interval = (1000 / fps).toDouble();
-  }
-
-  // jpg or png
-  void setFormat(String format) {
-    this.format = FORMAT[format.toLowerCase()];
-  }
-
-  // set the quality of the record: values between 0 and 1
-  void setQuality(double quality) {
-    this.quality = quality;
-  }
-
-  void setShouldPlayInLoop(bool should) {
-    _shouldPlayInLoop = should;
   }
 }
