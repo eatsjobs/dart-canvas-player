@@ -66,8 +66,8 @@ class App {
     });
   }
 
-  void drawInputCanvas(num id) {
-    inputRequestFrameId = window.requestAnimationFrame(drawInputCanvas);
+  void render(num id) {
+    inputRequestFrameId = window.requestAnimationFrame(render);
     drawFrameInputCanvas();
   }
 

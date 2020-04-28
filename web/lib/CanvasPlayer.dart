@@ -87,7 +87,7 @@ class CanvasPlayer {
       _playRequestAnimationID =
           window.requestAnimationFrame((id) => _playLoop(id));
 
-      _now = new DateTime.now().millisecondsSinceEpoch.toDouble();
+      _now = DateTime.now().millisecondsSinceEpoch.toDouble();
       _delta = _now - _then;
 
       if (_delta > _interval) {
