@@ -1,7 +1,7 @@
 name: dart_canvas_player
 version: 1.0.0
 description: >-
-  Do you have want to record a Canvas element?
+  Do you ever want to record a Canvas element?
 homepage: https://github.com/eatsjobs/dart-canvas-player
 
 environment:
