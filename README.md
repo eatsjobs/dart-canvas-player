@@ -10,6 +10,9 @@ Run the webserver
 webdev serve
 ```
 
+Generate the build
+webdev build
+
 Run tests with debugger
 ```shell script
 pub run test -p chrome ./web/test/CanvasPlayer_test.dart --pause-after-load
