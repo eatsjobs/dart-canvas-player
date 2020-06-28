@@ -1,5 +1,7 @@
 ## Dart Canvas Player
 
+[Demo](https://eatsjobs.github.io/dart-canvas-player/)
+
 Install dependencies
 ```shell script
 pub get
